@@ -9,33 +9,27 @@ on:
 
 jobs:
   build:
-    name: Build and Analyze
+    name: Build and analyze
     runs-on: windows-latest
     env:
-      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory  # Directory where build-wrapper output will be placed
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory  # Répertoire où Build Wrapper enregistrera la sortie
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
-
-      - name: Set up MSBuild
-        uses: microsoft/setup-msbuild@v2
+          fetch-depth: 0  # Clone complet du dépôt pour une analyse plus pertinente
 
       - name: Install sonar-scanner and build-wrapper
-        uses: sonarsource/sonarcloud-github-c-cpp@v3
-
-      - name: Create output directory for Build Wrapper
-        run: |
-          mkdir -p ${{ env.BUILD_WRAPPER_OUT_DIR }}  # Crée le dossier si nécessaire
+        uses: SonarSource/sonarcloud-github-c-cpp@v3
 
       - name: Run build-wrapper
         run: |
-          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} MSBuild.exe /t:Rebuild /nodeReuse:False 
+          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} msbuild "sonar_scanner_example.vcxproj" /t:Rebuild /nodeReuse:false  # Remplacez MonProjet.sln par le nom de votre fichier solution
 
       - name: Run sonar-scanner
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}  # Remplacez par votre token SonarCloud
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Votre token SonarCloud
         run: |
           sonar-scanner --define sonar.cfamily.compile-commands="${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json"
