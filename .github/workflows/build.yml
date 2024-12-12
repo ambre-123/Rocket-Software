@@ -25,7 +25,7 @@ jobs:
 
       - name: Run build-wrapper
         run: |
-          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} msbuild "sonar_scanner_example.sln"
+          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} msbuild C:\Users\ambrs\sonar_scanner_example.sln /t:rebuild /nodeReuse:false
 
       - name: Run sonar-scanner
         env:
