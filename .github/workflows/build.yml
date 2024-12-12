@@ -31,7 +31,7 @@ jobs:
 
       - name: Run build-wrapper
         run: |
-          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} "MSBuild.exe" /t:Rebuild /nodeReuse:False "MyProject.sln"  # Remplacez par le nom correct de votre fichier .sln
+          build-wrapper-win-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} MSBuild.exe /t:Rebuild /nodeReuse:False 
 
       - name: Run sonar-scanner
         env:
